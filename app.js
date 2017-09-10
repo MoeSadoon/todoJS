@@ -5,9 +5,27 @@ const dataController = (function () {
         done: []
     }
 
+    class todo {
+        constructor(description, id) {
+            this.description = description;
+            this.id = id;
+        }
+    }
+
     return {
         addItem: function (input) {
-            data.todos.push(input);
+            let item, ID
+
+            if(data.todos.length > 0) {
+                ID = data.todos[data.todos.length -1].id + 1;
+            }
+            else {
+                ID = 0;
+            }
+
+            item = new todo(input, ID);
+
+            data.todos.push(item);
         },
 
         test: function () {
