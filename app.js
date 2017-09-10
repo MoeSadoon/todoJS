@@ -61,7 +61,12 @@ const uiController = (function () {
             listItemHTML = document.createElement("li");
             listItemHTML.appendChild(document.createTextNode(input));
             document.querySelector(DOMstrings.todos).appendChild(listItemHTML);
+        },
+
+        clearField: function() {
+            document.querySelector(DOMstrings.input).value = '';
         }
+        
     }
 
 })();
@@ -89,6 +94,9 @@ const appController = (function (uiCtrl, dataCtrl) {
 
         // Add input to UI
         uiCtrl.addUI(input);
+
+        // Clear input from field
+        uiCtrl.clearField();
     }
 
     return {
