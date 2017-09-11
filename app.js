@@ -79,6 +79,12 @@ const uiController = (function () {
             document.querySelector(domStrings.todos).appendChild(listHtml);
         },
 
+        deleteUiItem: function (id) {
+            let node;
+            node = document.getElementById(id);
+            node.parentElement.removeChild(node);
+        },
+
         clearInput: function () {
             document.querySelector(domStrings.input).value = '';
         }
@@ -127,6 +133,7 @@ const appController = (function (uiCtrl, dataCtrl) {
         dataCtrl.deleteItem(id);
 
         // Delete from UI using id
+        uiCtrl.deleteUiItem(id);
     }
 
     return {
