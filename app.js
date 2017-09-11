@@ -32,6 +32,10 @@ const dataController = (function () {
             return item;
         },
 
+        deleteItem: function (id) {
+            data.todos.pop(id);
+        },
+
         test: function () {
             return data;
         }
@@ -92,6 +96,9 @@ const appController = (function (uiCtrl, dataCtrl) {
             if (e.keyCode === 13 || e.which === 13) {
                 ctrlAddItem();
             }
+           
+        // Delegate click event to todos ul up the dom tree to look out for click on button   
+        document.querySelector(domStrings.todos).addEventListener('click', ctrlDeleteItem);
         });
     }
 
@@ -108,6 +115,18 @@ const appController = (function (uiCtrl, dataCtrl) {
 
         // Clear input form
         uiCtrl.clearInput();
+    }
+
+    const ctrlDeleteItem = (e) => {
+        let id;
+
+        // Isolate ID of list item to be deleted
+        id = e.target.parentNode.id;
+
+        // Delete from data store using id
+        dataCtrl.deleteItem(id);
+
+        // Delete from UI using id
     }
 
     return {
