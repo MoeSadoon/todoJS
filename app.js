@@ -1,4 +1,6 @@
 const dataController = (function () {
+
+    //Where the todos are stored
     const data = {
         todos: [],
         done: []
@@ -22,6 +24,9 @@ const dataController = (function () {
                 ID = 0;
             }
             
+            /* When addItem is called and new item is created, two things happen:
+                1. the newly created item is added to the todos array
+                2. it is also returned so it can be used to be added to UI*/
             item = new Todo(ID, input);
             data.todos.push(item);
             return item;
