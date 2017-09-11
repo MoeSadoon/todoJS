@@ -57,15 +57,21 @@ const uiController = (function () {
         },
 
         addUiItem: function (item) {
-            let listHtml, description;
+            let listHtml, description, delBtn;
 
-            
+            // Creates list element with its unique id and description
             listHtml = document.createElement("li");
             listHtml.setAttribute("id", `${item.id}`);
             description = document.createTextNode(`${item.description}`);
             listHtml.appendChild(description);
-            // listHtml = `<li id=${item.id}>${item.description}</li>`;
+
+            // Creates delete button which becomes child of each list item
+            delBtn = document.createElement("button");
+            btnDesc = document.createTextNode("Delete");
+            delBtn.appendChild(btnDesc);
+            listHtml.appendChild(delBtn);
             
+            // Finally append it to the todos list
             document.querySelector(domStrings.todos).appendChild(listHtml);
         },
 
