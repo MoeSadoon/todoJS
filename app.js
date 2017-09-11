@@ -1,31 +1,30 @@
 const dataController = (function () {
-
     const data = {
         todos: [],
         done: []
-    }
+    };
 
-    class todo {
-        constructor(description, id) {
-            this.description = description;
+    class Todo {
+        constructor(id, description) {
             this.id = id;
+            this.description = description;
         }
     }
 
     return {
         addItem: function (input) {
-            let item, ID
+            let ID, item;
 
-            if(data.todos.length > 0) {
-                ID = data.todos[data.todos.length -1].id + 1;
+            if (data.todos.length > 0) {
+                ID = data.todos[data.todos.length - 1].id + 1
             }
             else {
                 ID = 0;
             }
-
-            item = new todo(input, ID);
-
+            
+            item = new Todo(ID, input);
             data.todos.push(item);
+            return item;
         },
 
         test: function () {
@@ -35,78 +34,78 @@ const dataController = (function () {
 
 })();
 
-
 const uiController = (function () {
 
-    const DOMstrings = {
+    const domStrings = {
         todos: '.todos',
-        input: '.input'
+        input: '.input',
     }
 
     return {
-        getDOMStrings: function () {
-            return DOMstrings;
+        getDomStrings: function () {
+            return domStrings;
         },
 
         getInput: function () {
-            let input;
-
-            input = document.querySelector(DOMstrings.input).value;
+            const input = document.querySelector(domStrings.input).value;
             return input;
         },
 
-        addUI: function (input) {
-            let listItemHTML;
+        addUiItem: function (item) {
+            let listHtml, description;
 
-            listItemHTML = document.createElement("li");
-            listItemHTML.appendChild(document.createTextNode(input));
-            document.querySelector(DOMstrings.todos).appendChild(listItemHTML);
+            
+            listHtml = document.createElement("li");
+            listHtml.setAttribute("id", `${item.id}`);
+            description = document.createTextNode(`${item.description}`);
+            listHtml.appendChild(description);
+            // listHtml = `<li id=${item.id}>${item.description}</li>`;
+            
+            document.querySelector(domStrings.todos).appendChild(listHtml);
         },
 
-        clearField: function() {
-            document.querySelector(DOMstrings.input).value = '';
+        clearInput: function () {
+            document.querySelector(domStrings.input).value = '';
         }
-        
     }
+
 
 })();
 
-
 const appController = (function (uiCtrl, dataCtrl) {
+    const domStrings = uiCtrl.getDomStrings();
 
-    const DOMstrings = uiCtrl.getDOMStrings();
-
-    const setUpEventlistener = () => {
-        document.querySelector(DOMstrings.input).addEventListener('keypress', event => {
-            if (event.keyCode === 13 || event.which === 13) {
-                addItem();
+    //Listens for everytime we hit enter on the input field so we can add a list item
+    const setupEventListeners = () => {
+        document.querySelector(domStrings.input).addEventListener('keypress', (e) => {
+            if (e.keyCode === 13 || e.which === 13) {
+                ctrlAddItem();
             }
         });
     }
 
-    // Add item to controller
-    const addItem = () => {
-        // Get input from UI
-        const input = uiCtrl.getInput();
+    const ctrlAddItem = () => {
+        let input, item;
+        // Get the input
+        input = uiCtrl.getInput();
 
-        // Add to data storage
-        dataCtrl.addItem(input);
+        // Add new item to data
+        item = dataCtrl.addItem(input);
 
-        // Add input to UI
-        uiCtrl.addUI(input);
+        // Add new item to UI
+        uiCtrl.addUiItem(item);
 
-        // Clear input from field
-        uiCtrl.clearField();
+        // Clear input form
+        uiCtrl.clearInput();
     }
 
     return {
         init: function () {
-            console.log("App has started");
-            setUpEventlistener();
+            console.log("app has started");
+            setupEventListeners();
         }
     }
 
 })(uiController, dataController);
 
-//Initialize app on load
 appController.init();
