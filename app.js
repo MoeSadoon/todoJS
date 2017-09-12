@@ -178,6 +178,8 @@ const appController = (function (uiCtrl, dataCtrl) {
 
         // Delete from UI using id
         uiCtrl.deleteUiItem(id);
+
+        uiCtrl.updateHeader();
     }
 
     const ctrlDeleteAll = () => {
@@ -195,6 +197,7 @@ const appController = (function (uiCtrl, dataCtrl) {
         init: function () {
             console.log("app has started");
             setupEventListeners();
+            uiCtrl.updateHeader();
         }
 
     }
