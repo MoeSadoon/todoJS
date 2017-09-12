@@ -23,7 +23,7 @@ const dataController = (function () {
             else {
                 ID = 0;
             }
-            
+
             /* When addItem is called and new item is created, two things happen:
                 1. the newly created item is added to the todos array
                 2. it is also returned so it can be used to be added to UI*/
@@ -40,6 +40,10 @@ const dataController = (function () {
             nodeArr.forEach(el => data.todos.pop(el));
         },
 
+        taskCount: function () {
+            return data.todos.length;
+        },
+
         test: function () {
             return data;
         }
@@ -47,7 +51,7 @@ const dataController = (function () {
 
 })();
 
-const uiController = (function () {
+const uiController = (function (dataCtrl) {
 
     const domStrings = {
         todos: '.todos',
@@ -66,7 +70,7 @@ const uiController = (function () {
         },
 
         addUiItem: function (item) {
-            let listHtml, description, delBtn;
+            let listHtml, description, delBtn, doneBtn, doneBtnDesc
 
             // Creates list element with its unique id and description
             listHtml = document.createElement("li");
@@ -79,7 +83,13 @@ const uiController = (function () {
             btnDesc = document.createTextNode("Delete");
             delBtn.appendChild(btnDesc);
             listHtml.appendChild(delBtn);
-            
+
+            // // Creates 'completed' button for when task is done
+            // doneBtn = document.createElement("button");
+            // doneBtnDesc = document.createTextNode("Completed");
+            // doneBtn.appendChild(doneBtnDesc);
+            // listHtml.appendChild(doneBtn);
+
             // Finally append it to the todos list
             document.querySelector(domStrings.todos).appendChild(listHtml);
         },
@@ -96,11 +106,30 @@ const uiController = (function () {
 
         clearInput: function () {
             document.querySelector(domStrings.input).value = '';
+        },
+
+        updateHeader: function () {
+            let header, count, newHeader;
+
+            header = document.querySelector('h1');
+            count = dataCtrl.taskCount();
+
+            /*
+            If the header doesnt have a number it just replaces the placeholder '%n%'
+            But if theres already a number, it replaces it using a regex 
+            */
+            if (header.innerHTML.includes('%n%')) {
+                newHeader = header.innerHTML.replace('%n%', count)
+            }
+            else {
+                newHeader = header.innerHTML.replace(/\d+/, count)
+            }
+            header.innerHTML = newHeader;
         }
     }
 
 
-})();
+})(dataController);
 
 const appController = (function (uiCtrl, dataCtrl) {
     const domStrings = uiCtrl.getDomStrings();
@@ -110,13 +139,13 @@ const appController = (function (uiCtrl, dataCtrl) {
         document.querySelector(domStrings.input).addEventListener('keypress', (e) => {
             if (e.keyCode === 13 || e.which === 13) {
                 ctrlAddItem();
-            }   
+            }
         });
 
         // Delegate click event to todos ul up the dom tree to look out for click on button   
         document.querySelector(domStrings.todos).addEventListener('click', ctrlDeleteItem);
         // 'Delete all' button
-        
+
         document.querySelector(domStrings.delAll).addEventListener('click', ctrlDeleteAll, true);
     }
 
@@ -133,6 +162,9 @@ const appController = (function (uiCtrl, dataCtrl) {
 
         // Clear input form
         uiCtrl.clearInput();
+
+        // Update header count;
+        uiCtrl.updateHeader();
     }
 
     const ctrlDeleteItem = (e) => {
@@ -154,7 +186,7 @@ const appController = (function (uiCtrl, dataCtrl) {
 
         // Delete all from data storage
         dataCtrl.deleteAll(allItems)
-         
+
         // Delete all from UI
         uiCtrl.deleteUiAll(allItems);
     }
@@ -164,6 +196,7 @@ const appController = (function (uiCtrl, dataCtrl) {
             console.log("app has started");
             setupEventListeners();
         }
+
     }
 
 })(uiController, dataController);
