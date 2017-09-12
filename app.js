@@ -111,7 +111,7 @@ const uiController = (function (dataCtrl) {
         updateHeader: function () {
             let header, count, newHeader;
 
-            header = document.querySelector('h1');
+            header = document.querySelector('h2');
             count = dataCtrl.taskCount();
 
             /*
@@ -125,6 +125,17 @@ const uiController = (function (dataCtrl) {
                 newHeader = header.innerHTML.replace(/\d+/, count)
             }
             header.innerHTML = newHeader;
+        },
+
+        updateDate: function () {
+            let header, newHeader;
+
+            header = document.querySelector('h1');
+            const date = new Date();
+            const months = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            header.innerHTML = `${days[date.getDay() - 1]} ${date.getDate()} ${months[date.getMonth()]}, ${date.getFullYear()}`
         }
     }
 
@@ -198,6 +209,7 @@ const appController = (function (uiCtrl, dataCtrl) {
             console.log("app has started");
             setupEventListeners();
             uiCtrl.updateHeader();
+            uiCtrl.updateDate();
         }
 
     }
