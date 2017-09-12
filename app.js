@@ -36,6 +36,10 @@ const dataController = (function () {
             data.todos.pop(id);
         },
 
+        deleteAll: function (nodeArr) {
+            nodeArr.forEach(el => data.todos.pop(el));
+        },
+
         test: function () {
             return data;
         }
@@ -48,6 +52,7 @@ const uiController = (function () {
     const domStrings = {
         todos: '.todos',
         input: '.input',
+        delAll: '.delete-all'
     }
 
     return {
@@ -85,6 +90,10 @@ const uiController = (function () {
             node.parentElement.removeChild(node);
         },
 
+        deleteUiAll: function (nodeArr) {
+            nodeArr.forEach(el => el.parentElement.removeChild(el));
+        },
+
         clearInput: function () {
             document.querySelector(domStrings.input).value = '';
         }
@@ -101,11 +110,14 @@ const appController = (function (uiCtrl, dataCtrl) {
         document.querySelector(domStrings.input).addEventListener('keypress', (e) => {
             if (e.keyCode === 13 || e.which === 13) {
                 ctrlAddItem();
-            }
-           
+            }   
+        });
+
         // Delegate click event to todos ul up the dom tree to look out for click on button   
         document.querySelector(domStrings.todos).addEventListener('click', ctrlDeleteItem);
-        });
+        // 'Delete all' button
+        
+        document.querySelector(domStrings.delAll).addEventListener('click', ctrlDeleteAll, true);
     }
 
     const ctrlAddItem = () => {
@@ -134,6 +146,17 @@ const appController = (function (uiCtrl, dataCtrl) {
 
         // Delete from UI using id
         uiCtrl.deleteUiItem(id);
+    }
+
+    const ctrlDeleteAll = () => {
+        //retrieve all list items
+        const allItems = Array.from(document.querySelectorAll('li'));
+
+        // Delete all from data storage
+        dataCtrl.deleteAll(allItems)
+         
+        // Delete all from UI
+        uiCtrl.deleteUiAll(allItems);
     }
 
     return {
